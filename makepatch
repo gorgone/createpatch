@@ -1,0 +1,60 @@
+#!/bin/bash
+
+clear
+
+failfile=false
+faildir=false
+[ -z "$1" ] || [ -z "$2" ] && printf "\n USE: $0 original new patchfilename\n\n" && exit
+[ ! -f "$1" ] || [ ! -f "$2" ] && failfile=true
+[ ! -d "$1" ] || [ ! -d "$2" ] && faildir=true
+
+if $failfile && $faildir; then
+    printf "\n USE: $0 original new patchfilename\n\n"
+    exit
+fi
+
+if [ -z "$3" ]
+then
+    tfile1="$(mktemp XXXXXX)"
+    printf "\n -> create $tfile1.patch \n"
+else
+    printf "\n -> create $3.patch \n"
+    tfile1="$3"
+fi
+
+tfile2="$(mktemp XXXXXX)"
+
+printf "\n  START\n =======\n"
+printf " 1. DIFF $1 $2\n"
+diff -u -r -B -N        \
+    --exclude="*~"      \
+    --exclude=".svn"    \
+    --exclude=".git"    \
+    --exclude="*.zip*"  \
+    --exclude="*.gz"    \
+    --exclude="*.tar"   \
+    --exclude="*.patch" \
+    --exclude="*.bak"   \
+    --exclude="*.old"   \
+    $1 $2 >$tfile1
+
+printf " 2. GREP $tfile1\n"
+grep '^[^\Kein]' $tfile1 >$tfile2
+
+printf " 3. GREP $tfile2\n"
+grep '^[^\diff]' $tfile2 >$tfile1
+
+printf " 4. SED  $tfile1\n"
+sed -i "s@+++ $2@+++ $1@g" "$tfile1"
+
+printf " 5. CLEAN $tfile2 $tfile1\n"
+rm $tfile2
+if [ ! -f "$1.patch" ]
+then
+    mv $tfile1 $1.patch
+    printf " 6. DONE $1.patch\n\n"
+else
+    mv $tfile1 $tfile1.patch
+    printf " 6. DONE $tfile1.patch\n\n"
+fi
+
