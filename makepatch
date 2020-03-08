@@ -5,8 +5,8 @@ clear
 failfile=false
 faildir=false
 [ -z "$1" ] || [ -z "$2" ] && printf "\n USE: $0 original new patchfilename\n\n" && exit
-[ ! -f "$1" ] || [ ! -f "$2" ] && failfile=true
-[ ! -d "$1" ] || [ ! -d "$2" ] && faildir=true
+[ -f "$1" ] || [ -f "$2" ] || failfile=true
+[ -d "$1" ] || [ -d "$2" ] || faildir=true
 
 if $failfile && $faildir; then
     printf "\n USE: $0 original new patchfilename\n\n"
