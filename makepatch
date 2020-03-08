@@ -36,6 +36,7 @@ diff -u -r -B -N        \
     --exclude="*.patch" \
     --exclude="*.bak"   \
     --exclude="*.old"   \
+    --exclude="*.o"     \
     $1 $2 >$tfile1
 
 printf " 2. GREP $tfile1\n"
