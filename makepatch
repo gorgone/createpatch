@@ -40,20 +40,20 @@ diff -u -r -d -B -N     \
     --exclude="*.o"     \
     $1 $2 >$tfile1
 
-printf " 3. GREP $tfile2\n"
+printf " 2. GREP $tfile2\n"
 grep '^[^\diff]' $tfile1 >$tfile2
 
-printf " 4. SED  $tfile2\n"
+printf " 3. SED  $tfile2\n"
 sed -i "s@+++ $2@+++ $1@g" "$tfile2"
 
-printf " 5. CLEAN $tfile2 $tfile1\n"
+printf " 4. CLEAN $tfile2 $tfile1\n"
 rm $tfile1
 if [ ! -f "$1.patch" ]
 then
     mv $tfile2 $1.patch
-    printf " 6. DONE $1.patch\n\n"
+    printf " 5. DONE $1.patch\n\n"
 else
     mv $tfile2 $tfile1.patch
-    printf " 6. DONE $tfile2.patch\n\n"
+    printf " 5. DONE $tfile2.patch\n\n"
 fi
 
